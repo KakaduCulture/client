@@ -1,6 +1,6 @@
 import { useRouter, useNavigation } from 'expo-router';
 import { useLayoutEffect, useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import { View,Image, Text, TextInput, Button, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 import { saveToken } from '@/utils/token';
 
 export default function LoginScreen() {
@@ -22,27 +22,37 @@ export default function LoginScreen() {
     }
 
     await saveToken('fake_token_123');
-    router.replace('/(tabs)/discover');
+    
   };
 
   return (
       <View style={styles.container}>
-        <Text>Login</Text>
+        <Image
+          source={require('../../assets/images/login_logo.png')} // Hoặc từ URL: { uri: 'https://your-image-url' }
+          style={styles.logo}
+          resizeMode="contain"
+        />
+
+
         <TextInput
-            placeholder="Email"
+            placeholder="EMAIL"
             value={email}
             onChangeText={setEmail}
             style={styles.input}
         />
+
         <TextInput
-            placeholder="Password"
+            placeholder="PASSWORD"
             value={password}
             onChangeText={setPassword}
             secureTextEntry
             style={styles.input}
         />
-        <Button title="Login" onPress={handleLogin} />
-        <Button title="No account? Register" onPress={() => router.push('/(auth)/register')} />
+        <TouchableOpacity style={styles.btn_login} onPress={handleLogin}>
+        <Text style={styles.buttonText}>LOG IN</Text>
+        </TouchableOpacity>
+
+
       </View>
   );
 }
@@ -50,12 +60,35 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'transparent',
+    backgroundColor:'#f3bd73',
     padding: 20,
-    paddingTop: 50,
+  },
+  btn_login: {
+    backgroundColor: '#c1553b',
+    justifyContent: 'center',
+    display: 'flex',
+    alignItems: 'center',
+    paddingVertical: 10,
+    marginTop: 40,
+    borderRadius: 8,
+    
+    
+
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 800,
+
   },
   input: {
+    backgroundColor: 'white',
     borderBottomWidth: 1,
     marginBottom: 10,
+    paddingHorizontal: 18,
+    
   },
+  logo: {
+    width : '100%',
+    
+  }
 });
