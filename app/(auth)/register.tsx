@@ -74,7 +74,7 @@ export default function RegisterScreen() {
         setError('Server error: unexpected response.');
       }
      
-      // router.replace("/(tabs)/discover");
+      router.replace("/(auth)/login");
     } catch (err) {
       console.error('Lỗi fetch:', err);
       console.error(err);
