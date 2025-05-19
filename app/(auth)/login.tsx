@@ -27,7 +27,7 @@ export default function LoginScreen() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username: email, password })
     });
-h
+
     const data = await response.json();
 
     if (!response.ok) {
@@ -70,7 +70,16 @@ h
         <TouchableOpacity style={styles.btn_login} onPress={handleLogin}>
         <Text style={styles.buttonText}>LOG IN</Text>
         </TouchableOpacity>
-
+       <Text style={styles.buttonText}>
+                     {" "}
+                     Don't have an account?{" "}
+                     <Text
+                       style={styles.linkText}
+                       onPress={() => router.replace("/(auth)/register")}
+                     >
+                       Sign up
+                     </Text>{" "}
+                   </Text>
 
       </View>
   );
@@ -90,14 +99,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     marginTop: 40,
     borderRadius: 8,
-    
-    
-
-  },
-  buttonText: {
-    color: 'white',
-    fontWeight: 800,
-
   },
   input: {
     backgroundColor: 'white',
@@ -109,5 +110,16 @@ const styles = StyleSheet.create({
   logo: {
     width : '100%',
     
-  }
+  },
+  buttonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  linkText: {
+    color: "#C1553B",
+    fontWeight: "bold",
+    textDecorationLine: "underline",
+   
+  },
 });
