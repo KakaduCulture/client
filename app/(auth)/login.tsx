@@ -22,13 +22,15 @@ export default function LoginScreen() {
   }
 
   try {
-    const response = await fetch('http://192.168.202.73:10000/api/auth/login', {
+    const response = await fetch('http://192.168.167.241:10000/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username: email, password })
     });
 
     const data = await response.json();
+
+    console.log("data", data)
 
     if (!response.ok) {
       Alert.alert('Login Failed', data.message || 'Unknown error');
