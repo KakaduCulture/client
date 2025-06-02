@@ -1,11 +1,12 @@
 import React from 'react';
 import { View, Text, Pressable, ScrollView } from 'react-native';
-import { useRouter, useNavigation } from 'expo-router';
+import { useRouter, useNavigation, router } from 'expo-router';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import type { NativeStackNavigationOptions } from '@react-navigation/native-stack';
 import TopBar from '@/components/layout/TopBar';
+import { Button } from '@react-navigation/elements';
 
 export default function DiscoverScreen() {
   // const router = useRouter();
@@ -35,7 +36,8 @@ export default function DiscoverScreen() {
       >
         <TopBar/>
       
-        {/* <Text>Discover Page</Text> */}
+        <Text style= {{color: "white"}}>Discover Page</Text>
+        <Button onPress={() => router.replace('/discover/detail')}> Discover Detail</Button>
       </View>
       </ScrollView>
   );

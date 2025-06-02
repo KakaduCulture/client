@@ -1,68 +1,120 @@
-import { View, Text, Button, FlatList, StyleSheet, Alert } from 'react-native';
-
-const mockCartItems = [
-  { id: '1', name: 'iPhone 15 Pro', quantity: 1, price: 1699 },
-  { id: '2', name: 'AirPods Pro', quantity: 2, price: 399 },
-];
+import React from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Pressable,
+} from 'react-native';
+import TopBar from '@/components/layout/TopBar';
 
 export default function CartScreen() {
-  const total = mockCartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-
-  const handleCheckout = () => {
-    Alert.alert('Checkout Success', 'Your order has been placed!');
-    // 你也可以在这里清空购物车、导航等
-  };
-
-  if (mockCartItems.length === 0) {
-    return (
-        <View style={styles.center}>
-          <Text style={styles.empty}>🛒 Your cart is empty.</Text>
-        </View>
-    );
-  }
-
   return (
-      <View style={styles.container}>
-        <FlatList
-            data={mockCartItems}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-                <View style={styles.item}>
-                  <Text>{item.quantity} × {item.name}</Text>
-                  <Text>${item.price * item.quantity}</Text>
-                </View>
-            )}
-            ListFooterComponent={
-              <View style={styles.footer}>
-                <Text style={styles.total}>Total: ${total}</Text>
-                <Button title="Checkout" onPress={handleCheckout} />
-              </View>
-            }
-        />
-      </View>
+    <View style={styles.wrapper}>
+      <TopBar />
+
+      <ScrollView contentContainerStyle={styles.container}>
+        <Text style={styles.heading}>Your Cart</Text>
+
+        {/* Product 1 */}
+        <View style={styles.item}>
+          <View style={styles.row}>
+            <Text style={styles.name}>Sunset Shirt</Text>
+            <Text style={styles.price}>$49.99</Text>
+          </View>
+          <Text style={styles.detail}>Size: M</Text>
+          <Text style={styles.detail}>Quantity: 2</Text>
+        </View>
+
+        {/* Product 2 */}
+        <View style={styles.item}>
+          <View style={styles.row}>
+            <Text style={styles.name}>Tote Bag</Text>
+            <Text style={styles.price}>$29.99</Text>
+          </View>
+          <Text style={styles.detail}>Size: One Size</Text>
+          <Text style={styles.detail}>Quantity: 1</Text>
+        </View>
+
+        {/* Total */}
+        <View style={styles.totalBox}>
+          <Text style={styles.totalLabel}>Total:</Text>
+          <Text style={styles.totalAmount}>$129.97</Text>
+
+          <Pressable style={styles.checkoutButton}>
+            <Text style={styles.checkoutText}>Checkout</Text>
+          </Pressable>
+        </View>
+      </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16 },
-  center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  empty: { fontSize: 18, color: '#888' },
+  wrapper: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  container: {
+    padding: 16,
+    paddingBottom: 100,
+  },
+  heading: {
+    fontSize: 24,
+    fontWeight: '700',
+    marginBottom: 16,
+  },
   item: {
-    paddingVertical: 12,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderColor: '#ddd',
+    marginBottom: 20,
+    padding: 14,
+    borderRadius: 10,
+    backgroundColor: '#f9f9f9',
+    borderWidth: 1,
+    borderColor: '#eee',
+  },
+  row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  footer: {
-    marginTop: 24,
-    paddingTop: 12,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderColor: '#ccc',
+  name: {
+    fontSize: 16,
+    fontWeight: '600',
   },
-  total: {
+  price: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#cc3300',
+  },
+  detail: {
+    fontSize: 14,
+    color: '#555',
+    marginTop: 4,
+  },
+  totalBox: {
+    marginTop: 32,
+    borderTopWidth: 1,
+    borderColor: '#ddd',
+    paddingTop: 16,
+  },
+  totalLabel: {
     fontSize: 18,
     fontWeight: '600',
-    marginBottom: 12,
+  },
+  totalAmount: {
+    fontSize: 22,
+    fontWeight: '700',
+    marginVertical: 12,
+    color: '#007AFF',
+  },
+  checkoutButton: {
+    backgroundColor: '#007AFF',
+    paddingVertical: 14,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  checkoutText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
