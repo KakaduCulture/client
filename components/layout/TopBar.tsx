@@ -56,6 +56,7 @@ const styles = StyleSheet.create({
   container: {
     // position: 'absolute',
     backgroundColor: "#FFF9EB",
+    // backgroundColor: "white",
     flexDirection: "row",
     width: "100%", // kéo dài hết chiều ngang
     height: 70,
