@@ -17,7 +17,7 @@ import TopBar from "@/components/layout/TopBar";
 import StoryList from "@/app/(tabs)/discover/story";
 import ActivityList from "@/app/(tabs)/discover/activities";
 import { Video, ResizeMode } from "expo-av";
-import { Button } from '@react-navigation/elements';
+import { Button } from "@react-navigation/elements";
 
 export default function DiscoverScreen() {
   // const router = useRouter();
@@ -42,61 +42,53 @@ export default function DiscoverScreen() {
 
   return (
     <FlatList
-  data={null} // không có item thực sự
-  ListHeaderComponent={
-    <>
-      <View
-        style={styles.container}
-        // style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
-      >
-        <View>
-          <TopBar />
-        </View>
-        <View>
-          <StoryList />
-        </View>
-        <Image
-          source={require("@/assets/images/Slogan.png")}
-          style={styles.slogan}
-        ></Image>
-        <Video
-          source={{
-            uri: "https://kakadutourism.com/files/videos/KT-WEB-HERO-VID-Reduced.mov",
-          }}
-          shouldPlay
-          isMuted
-          resizeMode={ResizeMode.CONTAIN}
-          useNativeControls={false}
-          isLooping
-          style={{ width: "100%", height: 200, marginTop: 20 }}
-        />
+      data={null} // không có item thực sự
+      ListHeaderComponent={
+        <>
+          <View
+            style={styles.container}
+            // style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+          >
+            <View>
+              <TopBar />
+            </View>
+            <View>
+              <StoryList />
+            </View>
+            <Image
+              source={require("@/assets/images/Slogan.png")}
+              style={styles.slogan}
+            ></Image>
+            <Video
+              source={{
+                uri: "https://kakadutourism.com/files/videos/KT-WEB-HERO-VID-Reduced.mov",
+              }}
+              shouldPlay
+              isMuted
+              resizeMode={ResizeMode.CONTAIN}
+              useNativeControls={false}
+              isLooping
+              style={{ width: "100%", height: 200, marginTop: 20 }}
+            />
 
-        <View style={styles.activitiesSection}>
-          <Text style={styles.header1}>Activities</Text>
-          {/* <View style={styles.activity}>
-            {activities.map((activity, index) => (
-              <View style={styles.imageWapper}>
-                <Image
-                  key={index}
-                  source={activity.image}
-                  style={styles.image}
-                />
-                <Text>{activity.name}</Text>
-              </View>
-            ))}
-          </View> */}
-          <ActivityList />
-        </View>
-        <TopBar/>
-      
-        <Text style= {{color: "white"}}>Discover Page</Text>
-        <Button onPress={() => router.replace('/discover/detail')}> Discover Detail</Button>
-      </View>
-      </>
-  }
-  renderItem={null}
-  keyExtractor={() => 'static'}
-/>
+            <View style={styles.activitiesSection}>
+              <Text style={styles.header1}>Activities</Text>
+              <ActivityList />
+            </View>
+
+            {/* <Text style={{ color: "white", marginBottom: 40 }}>
+              Discover Page
+            </Text>
+            <Button onPress={() => router.replace("/discover/detail")}>
+              {" "}
+              Discover Detail
+            </Button> */}
+          </View>
+        </>
+      }
+      renderItem={null}
+      keyExtractor={() => "static"}
+    />
   );
 }
 
@@ -107,12 +99,14 @@ const styles = StyleSheet.create({
   activitiesSection: {
     marginTop: 30,
     marginBottom: 50,
+    marginLeft: 12,
   },
   header1: {
     fontSize: 20,
     fontWeight: "500",
     color: "#C1553B",
-    marginLeft: 18,
+    marginLeft: 6,
+    marginBottom: 10,
   },
   slogan: {
     marginTop: 35,
