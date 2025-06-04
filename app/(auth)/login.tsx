@@ -22,7 +22,7 @@ export default function LoginScreen() {
   }
 
   try {
-    const response = await fetch('http://192.168.167.241:10000/api/auth/login', {
+    const response = await fetch('http://10.0.0.60:10000/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username: email, password })

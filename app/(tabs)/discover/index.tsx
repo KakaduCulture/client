@@ -8,7 +8,7 @@ import {
   StyleSheet,
   FlatList,
 } from "react-native";
-import { useRouter, useNavigation } from "expo-router";
+import { useRouter, useNavigation, router } from "expo-router";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
@@ -17,6 +17,7 @@ import TopBar from "@/components/layout/TopBar";
 import StoryList from "@/app/(tabs)/discover/story";
 import ActivityList from "@/app/(tabs)/discover/activities";
 import { Video, ResizeMode } from "expo-av";
+import { Button } from '@react-navigation/elements';
 
 export default function DiscoverScreen() {
   // const router = useRouter();
@@ -86,6 +87,10 @@ export default function DiscoverScreen() {
           </View> */}
           <ActivityList />
         </View>
+        <TopBar/>
+      
+        <Text style= {{color: "white"}}>Discover Page</Text>
+        <Button onPress={() => router.replace('/discover/detail')}> Discover Detail</Button>
       </View>
       </>
   }
