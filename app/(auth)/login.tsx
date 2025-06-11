@@ -2,6 +2,7 @@ import { useRouter, useNavigation } from 'expo-router';
 import { useLayoutEffect, useState } from 'react';
 import { View,Image, Text, TextInput, Button, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 import { saveToken } from '@/utils/token';
+import { saveCustomer } from "@/utils/session";
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -22,7 +23,7 @@ export default function LoginScreen() {
   }
 
   try {
-    const response = await fetch('http://10.0.0.60:10000/api/auth/login', {
+    const response = await fetch('http://192.168.1.189:10000/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username: email, password })
@@ -38,6 +39,7 @@ export default function LoginScreen() {
     }
 
     await saveToken(data.token);
+    await saveCustomer(data.user);
     Alert.alert('Success', 'Logged in successfully');
     router.replace('/(tabs)/discover'); // chuyển hướng sau khi login
   } catch (error) {

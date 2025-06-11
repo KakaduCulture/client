@@ -11,6 +11,7 @@ import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { useRouter } from "expo-router";
 
+
 export default function TopBar() {
   const [isSearching, setIsSearching] = useState(false);
   const [searchText, setSearchText] = useState("");
@@ -59,14 +60,14 @@ const styles = StyleSheet.create({
     // backgroundColor: "white",
     flexDirection: "row",
     width: "100%", // kéo dài hết chiều ngang
-    height: 70,
+    height: 100,
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 20,
   },
   logoText: {
     alignItems: "center",
-    marginTop: 3,
+    marginTop: 20,
   },
   logo1: {
     // width: 150,
@@ -86,7 +87,7 @@ const styles = StyleSheet.create({
     letterSpacing: 1.5,
   },
   rightSection: {
-    marginTop: 3,
+    marginTop: 25,
     flexDirection: "row",
     alignItems: "center",
   },
