@@ -9,10 +9,22 @@ import {
   FlatList,
 } from 'react-native';
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { Colors } from '@/constants/Colors';
+import { useLocalSearchParams } from 'expo-router';
+
+const imageMap = {
+  "waterfall.jpg": require("@/assets/images/waterfall.jpg"),
+  "birdwatching.jpg": require("@/assets/images/birdwatching.jpg"),
+  "swimming.webp": require("@/assets/images/swimming.webp"),
+  "season.jpg": require("@/assets/images/season.jpg"),
+  "birdwatching2.jpg": require("@/assets/images/birdwatching2.jpg"),
+  "birdwatching3.jpg": require("@/assets/images/birdwatching3.jpg"),
+  "waterfall1.jpg": require("@/assets/images/waterfall1.jpg"),
+  "waterfall2.jpg": require("@/assets/images/waterfall2.jpg"),
+};
 
 export default function DiscoverDetailScreen() {
   const colorScheme = useColorScheme();
+  const { name, image, description, headline1, headline2 } = useLocalSearchParams();
 
   const recommended = [
     { id: '1', name: 'Product 1' },
@@ -21,44 +33,49 @@ export default function DiscoverDetailScreen() {
     { id: '4', name: 'Product 4' },
   ];
 
+  // Xác định ảnh phụ theo chủ đề
+  let img1 = image;
+  let img2 = image;
+
+  if (image === "birdwatching.jpg") {
+    img1 = "birdwatching2.jpg";
+    img2 = "birdwatching3.jpg";
+  } else if (image === "waterfall.jpg") {
+    img1 = "waterfall1.jpg";
+    img2 = "waterfall2.jpg";
+  }
+
   return (
     <View style={[styles.container, { backgroundColor: 'white' }]}>
       <TopBar />
-
-        <ScrollView 
+      <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 100 }}
-        >
-        {/* Banner image placeholder */}
-        <View style={styles.banner} />
+        contentContainerStyle={{ paddingBottom: 120 }}
+      >
+        <Image source={imageMap[image]} style={styles.banner} />
 
-        {/* Title and content */}
-        <Text style={styles.articleTitle}>TITLE OF THE ARTICLE</Text>
-        <Text style={styles.articleText}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua...
-        </Text>
+        <Text style={styles.articleTitle}>{name}</Text>
+        <Text style={styles.articleText}>{description}</Text>
 
-        {/* Headline 1 */}
-        <Text style={styles.headline}>Headline 1</Text>
+        {/* Headline 1 – Image Right */}
+        <Text style={styles.headline}>{headline1}</Text>
         <View style={styles.row}>
-          <Text style={styles.articleText}>
-            Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur...
+          <Text style={[styles.articleText, { flex: 1 }]}>
+            Explore scenic locations and discover unique spots that match your activity. Whether it’s the vibrant wildlife or tranquil surroundings, this section highlights the best experiences.
           </Text>
-          <View style={styles.thumbnail} />
+          <Image source={imageMap[img1]} style={styles.thumbnail} />
         </View>
 
-        {/* Headline 2 */}
+        {/* Headline 2 – Image Left */}
+        <Text style={styles.headline}>{headline2}</Text>
         <View style={styles.row}>
-          <View style={styles.thumbnail} />
-          <View style={{ flex: 1, marginLeft: 12 }}>
-            <Text style={styles.headline}>Headline 2</Text>
-            <Text style={styles.articleText}>
-              Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore...
-            </Text>
-          </View>
+          <Image source={imageMap[img2]} style={styles.thumbnail} />
+          <Text style={[styles.articleText, { flex: 1, marginLeft: 12 }]}>
+            Plan your next outing with expert tips and guides to ensure a safe and enjoyable journey. From packing essentials to weather insights, we’ve got you covered.
+          </Text>
         </View>
 
-        {/* You May Like */}
+        {/* YOU MAY LIKE */}
         <Text style={styles.mayLike}>YOU MAY LIKE</Text>
         <FlatList
           horizontal
@@ -85,33 +102,44 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   banner: {
-    height: 200,
+    height: 240,
+    width: '100%',
     backgroundColor: '#ccc',
-    margin: 12,
+    marginTop: 12,
+    marginBottom: 12,
     borderRadius: 10,
+    alignSelf: 'center',
   },
   articleTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#993300',
-    marginHorizontal: 12,
-    marginBottom: 6,
+    marginHorizontal: 16,
+    marginBottom: 8,
+    lineHeight: 28,
+    textAlign: 'left',
   },
   articleText: {
-    fontSize: 14,
+    fontSize: 15,
     color: '#333',
-    marginHorizontal: 12,
-    marginBottom: 10,
+    marginHorizontal: 16,
+    marginBottom: 16,
+    lineHeight: 24,
+    textAlign: 'justify',
+    flexShrink: 1,
   },
   headline: {
     fontWeight: 'bold',
-    fontSize: 14,
-    marginHorizontal: 12,
-    marginBottom: 6,
+    fontSize: 16,
+    marginHorizontal: 16,
+    marginTop: 12,
+    marginBottom: 8,
     color: '#993300',
+    lineHeight: 24,
   },
   row: {
     flexDirection: 'row',
+    alignItems: 'flex-start',
     marginHorizontal: 12,
     marginBottom: 16,
   },
@@ -121,6 +149,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#aaa',
     borderRadius: 8,
     marginLeft: 12,
+    flexShrink: 0,
   },
   mayLike: {
     marginHorizontal: 12,
@@ -148,7 +177,7 @@ const styles = StyleSheet.create({
   seeMore: {
     textAlign: 'center',
     color: '#007AFF',
-    marginVertical: 12,
+    marginVertical: 16,
     fontWeight: '500',
   },
 });

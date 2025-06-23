@@ -1,6 +1,5 @@
-import { router } from 'expo-router';
-import React, { useState } from 'react';
-import { Button } from '@react-navigation/elements';
+import { useLocalSearchParams, router } from 'expo-router';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -9,24 +8,53 @@ import {
   Pressable,
   TextInput,
   Image,
+  Alert,
 } from 'react-native';
+import axios from 'axios';
 
 export default function ProductDetailScreen() {
+  const { id } = useLocalSearchParams(); // 👈 Lấy id sản phẩm từ URL
+  const [product, setProduct] = useState(null);
   const [selectedSize, setSelectedSize] = useState('M');
   const [quantity, setQuantity] = useState('1');
 
-  const product = {
-    name: 'Sunset Shirt',
-    price: '$49.99',
-    description: 'A lightweight and stylish shirt for summer adventures.',
-    image: 'https://via.placeholder.com/400x250.png?text=Sunset+Shirt',
+  const userId = 1; // ⚠️ Thay bằng user thực nếu có hệ thống auth
+
+  useEffect(() => {
+    if (id) {
+      axios
+        .get(`http://10.0.0.60:10000/api/product/${id}`)
+        .then((res) => setProduct(res.data))
+        .catch((err) => console.error(err));
+    }
+  }, [id]);
+
+  const handleAddToCart = async () => {
+    try {
+      await axios.post(
+        `http://10.0.0.60:10000/api/order/checkout/${userId}/product/${id}`
+      );
+      Alert.alert('✅ Đã thêm vào giỏ hàng');
+      router.replace('/shopping/cart');
+    } catch (error) {
+      console.error(error);
+      Alert.alert('❌ Không thể thêm vào giỏ hàng');
+    }
   };
+
+  if (!product) {
+    return (
+      <View style={styles.container}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Image source={{ uri: product.image }} style={styles.image} />
+      <Image source={{ uri: product.imageUrl }} style={styles.image} />
       <Text style={styles.name}>{product.name}</Text>
-      <Text style={styles.price}>{product.price}</Text>
+      <Text style={styles.price}>${product.price}</Text>
       <Text style={styles.description}>{product.description}</Text>
 
       <Text style={styles.label}>Size</Text>
@@ -40,7 +68,13 @@ export default function ProductDetailScreen() {
             ]}
             onPress={() => setSelectedSize(size)}
           >
-            <Text style={selectedSize === size ? styles.selectedSizeText : styles.sizeText}>
+            <Text
+              style={
+                selectedSize === size
+                  ? styles.selectedSizeText
+                  : styles.sizeText
+              }
+            >
               {size}
             </Text>
           </Pressable>
@@ -55,7 +89,9 @@ export default function ProductDetailScreen() {
         style={styles.input}
       />
 
-              <Button onPress={() => router.replace('/shopping/cart')}> Add to cart</Button>
+      <Pressable style={styles.button} onPress={handleAddToCart}>
+        <Text style={styles.buttonText}>Add to Cart</Text>
+      </Pressable>
     </ScrollView>
   );
 }

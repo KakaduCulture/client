@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import TopBar from '@/components/layout/TopBar';
 import {
   View,
@@ -6,17 +6,37 @@ import {
   Pressable,
   FlatList,
   StyleSheet,
+  Image,
 } from 'react-native';
 import { useRouter, useNavigation } from 'expo-router';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
-import type { NativeStackNavigationOptions } from '@react-navigation/native-stack';
+
+interface IProductData {
+  id: string;
+  name: string;
+  price: number;
+  stock: number;
+  unit: string;
+  imageUrl: string;
+  description: string;
+}
 
 export default function ShoppingScreen() {
   const router = useRouter();
   const colorScheme = useColorScheme();
   const navigation = useNavigation();
+  const [products, setProducts] = useState<IProductData[]>([]);
+
+  useEffect(() => {
+    fetch('http://10.0.0.60:10000/api/product')
+      .then((res) => res.json())
+      .then((data) => {
+        setProducts(data);
+      })
+      .catch((err) => console.error('Failed to fetch products:', err));
+  }, []);
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -36,59 +56,74 @@ export default function ShoppingScreen() {
 
   return (
     <View>
-    <TopBar />
-    <FlatList
-      contentContainerStyle={{ padding: 12, paddingBottom: 180, backgroundColor: "white", }}
-      data={[
-        { id: '1', name: 'Sunset Shirt', price: '$49.99' },
-        { id: '2', name: 'Outback Hat', price: '$35.00' },
-        { id: '3', name: 'Tote Bag', price: '$29.99' },
-        { id: '4', name: 'Socks', price: '$9.99' },
-      ]}
-      keyExtractor={(item) => item.id}
-      numColumns={2}
-      renderItem={({ item }) => (
-        <Pressable
-          style={styles.productCard}
-          onPress={() => router.push('/shopping/id')}>
-        
-          <View style={styles.imagePlaceholder} />
-          <Text style={styles.productName}>{item.name}</Text>
-          <Text style={styles.productPrice}>{item.price}</Text>
-        </Pressable>
-      )}
-    />
+      <TopBar />
+      <FlatList
+        contentContainerStyle={styles.container}
+        data={products}
+        keyExtractor={(item) => item.id.toString()}
+        numColumns={2}
+        renderItem={({ item }) => (
+          <Pressable
+            style={({ pressed }) => [
+              styles.productCard,
+              pressed && { transform: [{ scale: 0.98 }], opacity: 0.85 },
+            ]}
+            onPress={() =>
+              router.push({
+                pathname: '/shopping/[id]/detail',
+                params: { id: String(item.id) },
+              })
+            }
+          >
+            <Image source={{ uri: item.imageUrl }} style={styles.productImage} />
+            <Text style={styles.productName} numberOfLines={2}>
+              {item.name}
+            </Text>
+            <Text style={styles.productPrice}>${item.price.toLocaleString()}</Text>
+          </Pressable>
+        )}
+      />
     </View>
   );
 }
+
 const styles = StyleSheet.create({
+  container: {
+    paddingHorizontal: 12,
+    paddingTop: 16,
+    paddingBottom: 400,
+    backgroundColor: '#f2f2f2',
+  },
   productCard: {
     flex: 1,
     backgroundColor: '#fff',
     margin: 8,
-    borderRadius: 8,
-    padding: 10,
+    borderRadius: 12,
+    padding: 12,
     alignItems: 'center',
     shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+    shadowOpacity: 0.08,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 6,
+    elevation: 3,
   },
-  imagePlaceholder: {
+  productImage: {
     width: '100%',
-    height: 120,
-    backgroundColor: '#ccc',
-    borderRadius: 6,
-    marginBottom: 8,
+    height: 130,
+    resizeMode: 'cover',
+    borderRadius: 10,
+    marginBottom: 10,
   },
   productName: {
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: '600',
+    color: '#333',
     textAlign: 'center',
-    marginBottom: 4,
+    marginBottom: 6,
   },
   productPrice: {
-    fontSize: 13,
-    color: '#cc3300',
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#d32f2f',
   },
 });
