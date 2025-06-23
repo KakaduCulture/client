@@ -50,7 +50,7 @@ export default function ShoppingScreen() {
       renderItem={({ item }) => (
         <Pressable
           style={styles.productCard}
-          onPress={() => router.replace('/shopping/id')}>
+          onPress={() => router.push('/shopping/id')}>
         
           <View style={styles.imagePlaceholder} />
           <Text style={styles.productName}>{item.name}</Text>

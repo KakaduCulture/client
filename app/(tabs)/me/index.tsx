@@ -71,7 +71,7 @@ export default function MeScreen() {
         <Text style={styles.sectionTitle}>My Orders</Text>
         <View style={styles.orderSection}>
         
-          <TouchableOpacity style={styles.orderItem}>
+          <TouchableOpacity style={styles.orderItem} onPress={() => router.push("/orders/unpaid")}>
             <FontAwesome name="credit-card" size={70} color="#C1553B" />
 
             <Text style={styles.orderText}>Unpaid Order</Text>
@@ -112,9 +112,9 @@ const styles = StyleSheet.create({
   },
   divider: {
     height: 1.5,
-    backgroundColor: "#f2c088", // màu cam đất Kakadu
-    width: "80%",               // chỉ chiếm 80% chiều rộng
-    alignSelf: "center",        // căn giữa ngang
+    backgroundColor: "#f2c088", 
+    width: "80%",               
+    alignSelf: "center",        
     // marginVertical: 24,
      marginBottom: 40,
   },
