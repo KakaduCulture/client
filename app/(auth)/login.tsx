@@ -43,7 +43,6 @@ export default function LoginScreen() {
       });
 
       const data = await response.json();
-
       console.log('data', data);
 
       if (!response.ok) {
@@ -67,7 +66,11 @@ export default function LoginScreen() {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <ScrollView contentContainerStyle={styles.inner}>
+        <ScrollView
+          style={{ flex: 1 }}
+          contentContainerStyle={styles.inner}
+          keyboardShouldPersistTaps="handled"
+        >
           <Image
             source={require('../../assets/images/login_logo.png')}
             style={styles.logo}
@@ -95,16 +98,17 @@ export default function LoginScreen() {
             <Text style={styles.buttonText}>LOG IN</Text>
           </TouchableOpacity>
 
-          <Text style={styles.buttonText}>
-            {" "}
-            Don't have an account?{" "}
-            <Text
-              style={styles.linkText}
-              onPress={() => router.replace('/(auth)/register')}
-            >
-              Sign up
-            </Text>{" "}
-          </Text>
+          <View style={styles.bottomTextBox}>
+            <Text style={styles.bottomText}>
+              Don't have an account?{' '}
+              <Text
+                style={styles.linkText}
+                onPress={() => router.replace('/(auth)/register')}
+              >
+                Sign up
+              </Text>
+            </Text>
+          </View>
         </ScrollView>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
@@ -118,7 +122,6 @@ const styles = StyleSheet.create({
   },
   inner: {
     flexGrow: 1,
-    justifyContent: 'center',
     padding: 20,
   },
   logo: {
@@ -145,7 +148,14 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
     textAlign: 'center',
-    marginTop: 20,
+  },
+  bottomTextBox: {
+    marginTop: 30,
+    alignItems: 'center',
+  },
+  bottomText: {
+    color: '#333',
+    fontSize: 14,
   },
   linkText: {
     color: '#C1553B',
