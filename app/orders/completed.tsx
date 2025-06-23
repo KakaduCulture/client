@@ -24,6 +24,8 @@ export default function UnpaidScreen() {
             headers: {'Content-Type': 'application/json'}
           });
 
+          console.log("response:", response);
+
           const data = await response.json();
 
           if (!response.ok) {
@@ -51,7 +53,7 @@ export default function UnpaidScreen() {
   }, []);
 
   if (order.length === 0) {
-    return <Text style={styles.loading}>No unpaid orders</Text>;
+    return <Text style={styles.loading}>No completed orders</Text>;
   }
 
   return (
@@ -62,7 +64,7 @@ export default function UnpaidScreen() {
             <View key={orderGroup.order.id} style={styles.card}>
               <View style={styles.cardHeader}>
                 <Text style={styles.orderId}>Order ID: {orderGroup.order.id}</Text>
-                <Button title="Pay Now" onPress={() => console.log(`Pay for order ${orderGroup.order.id}`)} />
+                {/* <Button title="Pay Now" onPress={() => console.log(`Pay for order ${orderGroup.order.id}`)} /> */}
               </View>
               <View style={styles.itemList}>
                 {orderGroup.items.map((item: any) => (

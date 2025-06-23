@@ -8,7 +8,7 @@ import {
   StyleSheet,
   Alert,
 } from "react-native";
-import { getUnpaidOrders } from "@/lib/api/order";
+import { getUnpaidOrders, payOrder } from "@/lib/api/order";
 import { getCustomer } from "@/utils/session";
 import { useRouter } from "expo-router";
 
@@ -21,6 +21,7 @@ export default function UnpaidOrderScreen() {
   const [totalPrice, setTotalPrice] = useState(0);
   const [customerId, setCustomerId] = useState<string>("");
   const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const router = useRouter();
 
@@ -28,7 +29,10 @@ export default function UnpaidOrderScreen() {
     const fetchOrders = async () => {
       const customer = await getCustomer();
       console.log("Loaded customer:", customer);
-      if (!customer?.id) return;
+      if (!customer?.id){
+        setIsLoading(false);
+        return;
+      } 
 
       setCustomerId(customer.id);
       const data = await getUnpaidOrders(customer.id);
@@ -50,12 +54,50 @@ export default function UnpaidOrderScreen() {
         setPhone(o.order?.phone || "");
         setAddress(o.order?.address || "");
       }
+       setIsLoading(false);
     };
 
     fetchOrders();
   }, []);
 
+ 
+
+  // const handlePay = async () => {
+  //   if (!customerId) {
+  //     Alert.alert("Missing customer ID");
+  //     return;
+  //   }
+
+  //   setLoading(true);
+  //   try {
+  //     const res = await fetch(`http://192.168.1.189:10000/api/orders/payment/${customerId}`, {
+  //       method: "PUT",
+  //       headers: { "Content-Type": "application/json" },
+  //     });
+
+  //     if (!res.ok) {
+  //       const errText = await res.text();
+  //       throw new Error(errText);
+  //     }
+
+  //     Alert.alert("Success", "Payment successful!");
+  //     router.replace("/(tabs)/discover");
+  //   } catch (err: any) {
+  //     console.error("Payment error", err);
+  //     Alert.alert("Error", err.message || "Payment failed");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
   const handlePay = async () => {
+    if (!name.trim() || !email.trim() || !phone.trim() || !address.trim()) {
+      Alert.alert(
+        "Missing information",
+        "Please fill in all fields before proceeding."
+      );
+      return;
+    }
     if (!customerId) {
       Alert.alert("Missing customer ID");
       return;
@@ -63,16 +105,7 @@ export default function UnpaidOrderScreen() {
 
     setLoading(true);
     try {
-      const res = await fetch(`http://192.168.202.75:10000/api/order/payment/${customerId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-      });
-
-      if (!res.ok) {
-        const errText = await res.text();
-        throw new Error(errText);
-      }
-
+      await payOrder(customerId);
       Alert.alert("Success", "Payment successful!");
       router.replace("/(tabs)/discover");
     } catch (err: any) {
@@ -82,27 +115,54 @@ export default function UnpaidOrderScreen() {
       setLoading(false);
     }
   };
+if (isLoading) {
+    return <Text style={styles.loading}>Loading...</Text>;
+  }
 
+  if (!isLoading && items.length === 0) {
+    return <Text style={styles.loading}>No unpaid orders</Text>;
+  }
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.title}>Unpaid Order</Text>
 
-      {items.length === 0 && (
-        <Text style={styles.noOrders}>No unpaid orders found.</Text>
-      )}
+     
 
-      {items.map((item, idx) => (
-        <View key={idx} style={styles.item}>
-          <Text style={styles.price}>${(item.price || 0).toFixed(2)}</Text>
-          <Text>Quantity: {item.quantity}</Text>
-        </View>
-      ))}
+     {items.map((item, idx) => (
+  <View key={idx} style={styles.itemRow}>
+    <View>
+      <Text style={styles.name}>{item.name || "Unnamed"}</Text>
+      <Text>Quantity: {item.quantity}</Text>
+    </View>
+    <Text style={styles.price}>${(item.price || 0).toFixed(2)}</Text>
+  </View>
+))}
 
       <View style={styles.form}>
-        <TextInput style={styles.input} placeholder="Name" value={name} onChangeText={setName} />
-        <TextInput style={styles.input} placeholder="Email" value={email} onChangeText={setEmail} />
-        <TextInput style={styles.input} placeholder="Phone" value={phone} onChangeText={setPhone} />
-        <TextInput style={styles.input} placeholder="Address" value={address} onChangeText={setAddress} />
+        <TextInput
+          style={styles.input}
+          placeholder="Name"
+          value={name}
+          onChangeText={setName}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          value={email}
+          onChangeText={setEmail}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Phone"
+          value={phone}
+          onChangeText={setPhone}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Address"
+          value={address}
+          onChangeText={setAddress}
+        />
       </View>
 
       <Text style={styles.total}>Total: ${totalPrice.toFixed(2)}</Text>
@@ -138,19 +198,33 @@ const styles = StyleSheet.create({
     marginTop: 20,
     color: "gray",
   },
-  item: {
-    backgroundColor: "#f9f9f9",
-    padding: 14,
-    marginBottom: 10,
-    borderRadius: 10,
-    borderColor: "#eee",
-    borderWidth: 1,
+    loading: {
+    marginTop: 100,
+    textAlign: "center",
+    color: "#888",
   },
+ itemRow: {
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "center",
+  backgroundColor: "#f9f9f9",
+  padding: 14,
+  marginBottom: 10,
+  borderRadius: 10,
+  borderColor: "#eee",
+  borderWidth: 1,
+},
+  name: {
+  fontSize: 16,
+  fontWeight: "bold",
+  marginBottom: 4,
+},
   price: {
-    fontWeight: "bold",
-    fontSize: 16,
-    color: "#C1553B",
-  },
+  fontWeight: "bold",
+  fontSize: 16,
+  color: "#C1553B",
+  textAlign: "right",
+},
   form: {
     backgroundColor: "#fff",
     padding: 16,
