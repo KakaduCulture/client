@@ -32,11 +32,14 @@ export default function DiscoverScreen() {
   return (
       <SafeAreaView style={{ backgroundColor: '#FFF9EB', flex: 1 }}>
         <StatusBar backgroundColor="#FFF9EB" barStyle="dark-content" />
+
+        <TopBar />
+
         <FlatList
             data={null} // không có item thực sự
             ListHeaderComponent={
               <View style={styles.container}>
-                <TopBar />
+
                 <StoryList />
                 <Image
                     source={require("@/assets/images/Slogan.png")}

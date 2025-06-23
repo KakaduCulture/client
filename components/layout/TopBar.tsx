@@ -11,6 +11,7 @@ import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { useRouter } from "expo-router";
 
+
 export default function TopBar() {
   const [isSearching, setIsSearching] = useState(false);
   const [searchText, setSearchText] = useState("");
@@ -61,7 +62,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 20,
-    paddingVertical: 10,
   },
   logoText: {
     alignItems: "center",
