@@ -1,5 +1,5 @@
-import { useRouter, useNavigation } from 'expo-router';
-import { useLayoutEffect, useState } from 'react';
+import {useRouter, useNavigation} from 'expo-router';
+import {useLayoutEffect, useState} from 'react';
 import {
   View,
   Image,
@@ -14,8 +14,9 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
 } from 'react-native';
-import { saveToken } from '@/utils/token';
-import { saveCustomer } from '@/utils/session';
+import {saveToken} from '@/utils/token';
+import {saveCustomer} from '@/utils/session';
+import Constants from 'expo-constants';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -36,10 +37,13 @@ export default function LoginScreen() {
     }
 
     try {
-      const response = await fetch('http://192.168.1.189:10000/api/auth/login', {
+      const API_BASE_URL =
+          Constants.expoConfig?.extra?.API_BASE_URL ??
+          Constants.manifest2?.extra?.API_BASE_URL;
+      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: email, password }),
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({username: email, password}),
       });
 
       const data = await response.json();
@@ -62,52 +66,52 @@ export default function LoginScreen() {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    >
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <ScrollView contentContainerStyle={styles.inner}>
-          <Image
-            source={require('../../assets/images/login_logo.png')}
-            style={styles.logo}
-            resizeMode="contain"
-          />
+      <KeyboardAvoidingView
+          style={styles.container}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <ScrollView contentContainerStyle={styles.inner}>
+            <Image
+                source={require('../../assets/images/login_logo.png')}
+                style={styles.logo}
+                resizeMode="contain"
+            />
 
-          <TextInput
-            placeholder="EMAIL"
-            value={email}
-            onChangeText={setEmail}
-            style={styles.input}
-            autoCapitalize="none"
-            keyboardType="email-address"
-          />
+            <TextInput
+                placeholder="EMAIL"
+                value={email}
+                onChangeText={setEmail}
+                style={styles.input}
+                autoCapitalize="none"
+                keyboardType="email-address"
+            />
 
-          <TextInput
-            placeholder="PASSWORD"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-            style={styles.input}
-          />
+            <TextInput
+                placeholder="PASSWORD"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry
+                style={styles.input}
+            />
 
-          <TouchableOpacity style={styles.btn_login} onPress={handleLogin}>
-            <Text style={styles.buttonText}>LOG IN</Text>
-          </TouchableOpacity>
+            <TouchableOpacity style={styles.btn_login} onPress={handleLogin}>
+              <Text style={styles.buttonText}>LOG IN</Text>
+            </TouchableOpacity>
 
-          <Text style={styles.buttonText}>
-            {" "}
-            Don't have an account?{" "}
-            <Text
-              style={styles.linkText}
-              onPress={() => router.replace('/(auth)/register')}
-            >
-              Sign up
-            </Text>{" "}
-          </Text>
-        </ScrollView>
-      </TouchableWithoutFeedback>
-    </KeyboardAvoidingView>
+            <Text style={styles.buttonText}>
+              {" "}
+              Don't have an account?{" "}
+              <Text
+                  style={styles.linkText}
+                  onPress={() => router.replace('/(auth)/register')}
+              >
+                Sign up
+              </Text>{" "}
+            </Text>
+          </ScrollView>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
   );
 }
 

@@ -11,6 +11,7 @@ import {
   ScrollView,
 } from "react-native";
 import { useState } from "react";
+import Constants from 'expo-constants';
 
 export default function RegisterScreen() {
   const [error, setError] = useState("");
@@ -44,8 +45,10 @@ export default function RegisterScreen() {
   
 
     try {
-     
-      const response = await fetch('http://192.168.202.63:10000/api/users', {
+      const API_BASE_URL =
+          Constants.expoConfig?.extra?.API_BASE_URL ??
+          Constants.manifest2?.extra?.API_BASE_URL;
+      const response = await fetch(`${API_BASE_URL}/api/users` , {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

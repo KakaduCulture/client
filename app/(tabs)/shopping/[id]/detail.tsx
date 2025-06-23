@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -9,24 +9,28 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native';
-import { useRouter, useNavigation, useLocalSearchParams } from 'expo-router';
-import { useColorScheme } from '@/hooks/useColorScheme';
-import { Colors } from '@/constants/Colors';
+import {useRouter, useNavigation, useLocalSearchParams} from 'expo-router';
+import {useColorScheme} from '@/hooks/useColorScheme';
+import {Colors} from '@/constants/Colors';
 import TopBar from '@/components/layout/TopBar';
+import Constants from 'expo-constants';
 
 export default function ProductDetailScreen() {
   const colorScheme = useColorScheme();
   const router = useRouter();
   const navigation = useNavigation();
-  const { id } = useLocalSearchParams();
+  const {id} = useLocalSearchParams();
   const [product, setProduct] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const userId = 1;
+  const API_BASE_URL =
+      Constants.expoConfig?.extra?.API_BASE_URL ??
+      Constants.manifest2?.extra?.API_BASE_URL;
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await fetch(`http://10.0.0.60:10000/api/product/${id}`);
+        const response = await fetch(`${API_BASE_URL}/api/product/${id}`);
         const data = await response.json();
         setProduct(data);
       } catch (err) {
@@ -49,9 +53,9 @@ export default function ProductDetailScreen() {
         imageUrl: product.imageUrl,
       };
 
-      const response = await fetch('http://10.0.0.60:10000/api/cart', {
+      const response = await fetch(`${API_BASE_URL}/api/cart`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(cartData),
       });
 
@@ -72,48 +76,48 @@ export default function ProductDetailScreen() {
     navigation.setOptions({
       title: 'Product Detail',
       headerLeft: () => (
-        <Pressable onPress={() => router.push('/(tabs)/shopping')}>
-          <Text style={{ marginLeft: 16, color: Colors[colorScheme ?? 'light'].text }}>
-            ← Back
-          </Text>
-        </Pressable>
+          <Pressable onPress={() => router.push('/(tabs)/shopping')}>
+            <Text style={{marginLeft: 16, color: Colors[colorScheme ?? 'light'].text}}>
+              ← Back
+            </Text>
+          </Pressable>
       ),
     });
   }, [navigation, router, colorScheme]);
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#007AFF" />
-      </View>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#007AFF"/>
+        </View>
     );
   }
 
   if (!product) {
     return (
-      <View style={styles.loadingContainer}>
-        <Text>Product not found.</Text>
-      </View>
+        <View style={styles.loadingContainer}>
+          <Text>Product not found.</Text>
+        </View>
     );
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <TopBar />
+      <ScrollView contentContainerStyle={styles.container}>
+        <TopBar/>
 
-      <Image source={{ uri: product.imageUrl }} style={styles.image} resizeMode="cover" />
+        <Image source={{uri: product.imageUrl}} style={styles.image} resizeMode="cover"/>
 
-      <View style={styles.card}>
-        <Text style={styles.productName}>{product.name}</Text>
-        <Text style={styles.productPrice}>${product.price.toLocaleString()}</Text>
-        <Text style={styles.productDescription}>{product.description}</Text>
-        <Text style={styles.productStock}>In stock: {product.stock}</Text>
+        <View style={styles.card}>
+          <Text style={styles.productName}>{product.name}</Text>
+          <Text style={styles.productPrice}>${product.price.toLocaleString()}</Text>
+          <Text style={styles.productDescription}>{product.description}</Text>
+          <Text style={styles.productStock}>In stock: {product.stock}</Text>
 
-        <Pressable style={styles.buyButton} onPress={handleAddToCart}>
-          <Text style={styles.buyButtonText}>Add to Cart</Text>
-        </Pressable>
-      </View>
-    </ScrollView>
+          <Pressable style={styles.buyButton} onPress={handleAddToCart}>
+            <Text style={styles.buyButtonText}>Add to Cart</Text>
+          </Pressable>
+        </View>
+      </ScrollView>
   );
 }
 
@@ -141,7 +145,7 @@ const styles = StyleSheet.create({
     padding: 20,
     shadowColor: '#000',
     shadowOpacity: 0.05,
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowRadius: 10,
     elevation: 3,
   },
