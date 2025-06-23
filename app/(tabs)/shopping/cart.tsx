@@ -8,7 +8,6 @@ import {
   Alert, TouchableOpacity,
 } from 'react-native';
 import axios from 'axios';
-import TopBar from '@/components/layout/TopBar';
 import {useFocusEffect, useNavigation} from "expo-router";
 import Feather from "@expo/vector-icons/Feather";
 
@@ -82,7 +81,6 @@ export default function CartScreen() {
               onPress={() => navigation.goBack()}
               style={{flexDirection: 'row', alignItems: 'center', marginLeft: -2}}
           >
-            {/*<FontAwesome name="arrow-left" size={20} color="#C1553B"/>*/}
             <Feather name="chevron-left" size={20} color="#C1553B" />
             <Text
                 style={{
