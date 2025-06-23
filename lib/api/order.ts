@@ -10,3 +10,14 @@ export async function getUnpaidOrders(customerId: string) {
     return [];
   }
 }
+
+export async function payOrder(customerId: string) {
+  const res = await fetch(`${API_URL}/payment/${customerId}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error("Payment failed: " + text);
+  }
+}

@@ -2,24 +2,27 @@ import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
-  ScrollView,
-  StyleSheet,
   TextInput,
   TouchableOpacity,
+  ScrollView,
+  StyleSheet,
+  Alert,
 } from "react-native";
 import { getUnpaidOrders } from "@/lib/api/order";
 import { getCustomer } from "@/utils/session";
-import OrderCard from "@/components/domain/OrderCard";
+import { useRouter } from "expo-router";
 
 export default function UnpaidOrderScreen() {
-  const [orders, setOrders] = useState<any[]>([]);
+  const [items, setItems] = useState<any[]>([]);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [totalPrice, setTotalPrice] = useState(0);
+  const [customerId, setCustomerId] = useState<string>("");
+  const [loading, setLoading] = useState(false);
 
-  // const router = useRouter();
+  const router = useRouter();
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -27,81 +30,91 @@ export default function UnpaidOrderScreen() {
       console.log("Loaded customer:", customer);
       if (!customer?.id) return;
 
+      setCustomerId(customer.id);
       const data = await getUnpaidOrders(customer.id);
       console.log("Fetched unpaid orders:", data);
 
-      if (data?.orderInfo?.length > 0) {
-        const firstOrder = data.orderInfo[0];
-        setOrders(firstOrder.items || []);
+      if (data.orderInfo?.length > 0) {
+        const o = data.orderInfo[0];
+        setItems(o.items || []);
 
-        // Total = sum of price * quantity
-        const total = firstOrder.items.reduce((sum: number, item: any) => {
+        const total = o.items.reduce((sum: number, item: any) => {
           const price = item.price || 0;
           const quantity = item.quantity || 1;
           return sum + price * quantity;
         }, 0);
-
         setTotalPrice(total);
 
-        // Set info from order
-        setName(firstOrder.order?.name || customer.name);
-        setEmail(firstOrder.order?.email || customer.username);
-        setPhone(firstOrder.order?.phone || "");
-        setAddress(firstOrder.order?.address || "");
+        setName(o.order?.name || customer.name);
+        setEmail(o.order?.email || customer.username);
+        setPhone(o.order?.phone || "");
+        setAddress(o.order?.address || "");
       }
     };
 
     fetchOrders();
   }, []);
 
+  const handlePay = async () => {
+    if (!customerId) {
+      Alert.alert("Missing customer ID");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await fetch(`http://192.168.202.75:10000/api/order/payment/${customerId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!res.ok) {
+        const errText = await res.text();
+        throw new Error(errText);
+      }
+
+      Alert.alert("Success", "Payment successful!");
+      router.replace("/(tabs)/discover");
+    } catch (err: any) {
+      console.error("Payment error", err);
+      Alert.alert("Error", err.message || "Payment failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.title}>Unpaid Order</Text>
 
-      {orders.length === 0 && (
+      {items.length === 0 && (
         <Text style={styles.noOrders}>No unpaid orders found.</Text>
       )}
 
-      {orders.map((item, index) => (
-        <View key={index} style={styles.item}>
-          <Text style={styles.price}>
-            ${item.price?.toFixed(2) || "0.00"}
-          </Text>
+      {items.map((item, idx) => (
+        <View key={idx} style={styles.item}>
+          <Text style={styles.price}>${(item.price || 0).toFixed(2)}</Text>
           <Text>Quantity: {item.quantity}</Text>
         </View>
       ))}
 
       <View style={styles.form}>
-        <TextInput
-          style={styles.input}
-          placeholder="Name"
-          value={name}
-          onChangeText={setName}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          value={email}
-          onChangeText={setEmail}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Phone"
-          value={phone}
-          onChangeText={setPhone}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Address"
-          value={address}
-          onChangeText={setAddress}
-        />
+        <TextInput style={styles.input} placeholder="Name" value={name} onChangeText={setName} />
+        <TextInput style={styles.input} placeholder="Email" value={email} onChangeText={setEmail} />
+        <TextInput style={styles.input} placeholder="Phone" value={phone} onChangeText={setPhone} />
+        <TextInput style={styles.input} placeholder="Address" value={address} onChangeText={setAddress} />
       </View>
 
       <Text style={styles.total}>Total: ${totalPrice.toFixed(2)}</Text>
 
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Pay Now</Text>
+      <TouchableOpacity
+        style={[styles.button, loading && styles.buttonDisabled]}
+        onPress={handlePay}
+        disabled={loading}
+      >
+        <Text style={styles.buttonText}>
+          {loading ? "Processing..." : "Pay Now"}
+        </Text>
       </TouchableOpacity>
     </ScrollView>
   );
@@ -141,8 +154,7 @@ const styles = StyleSheet.create({
   form: {
     backgroundColor: "#fff",
     padding: 16,
-    marginTop: 20,
-    marginBottom: 20,
+    marginVertical: 20,
     borderRadius: 10,
     shadowColor: "#ccc",
     shadowOpacity: 0.1,
@@ -171,6 +183,9 @@ const styles = StyleSheet.create({
     padding: 14,
     borderRadius: 6,
     marginBottom: 40,
+  },
+  buttonDisabled: {
+    backgroundColor: "#A3584B",
   },
   buttonText: {
     textAlign: "center",
