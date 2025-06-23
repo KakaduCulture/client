@@ -14,6 +14,7 @@ import TopBar from "@/components/layout/TopBar";
 import {getCustomer, deleteCustomer} from "@/utils/session";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 export default function MeScreen() {
   const router = useRouter();
@@ -46,48 +47,48 @@ export default function MeScreen() {
   };
 
   return (
+      <SafeAreaView style={styles.container}>
+
+        <View style={styles.container}>
+          {/*<TopBar/>*/}
+          <View style={styles.profileHeader}>
+            <Image
+                source={require("@/assets/images/story3.webp")}
+                style={styles.avatar}
+            />
+
+            <View>
+              <Text style={styles.name}>{customer.name}</Text>
+              <Text style={styles.email}>{customer.username}</Text>
+
+              <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+                <Text style={styles.logoutText}>Logout</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View style={styles.divider}/>
 
 
-      <View style={styles.container}>
-        <TopBar/>
-        <View style={styles.profileHeader}>
-          <Image
-              source={require("@/assets/images/story3.webp")}
-              style={styles.avatar}
-          />
+          <Text style={styles.sectionTitle}>My Orders</Text>
+          <View style={styles.orderSection}>
 
-          <View>
-            <Text style={styles.name}>{customer.name}</Text>
-            <Text style={styles.email}>{customer.username}</Text>
+            <TouchableOpacity style={styles.orderItem} onPress={() => router.push("/orders/unpaid")}>
+              <FontAwesome name="credit-card" size={70} color="#C1553B"/>
 
-            <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
-              <Text style={styles.logoutText}>Logout</Text>
+              <Text style={styles.orderText}>Unpaid Order</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() =>
+                router.push({
+                  pathname: '/orders/completed',
+                })
+            } style={styles.orderItem}>
+              <Ionicons name="bag-check-outline" size={85} color="#C1553B"/>
+              <Text style={styles.orderText}>Completed Orders</Text>
             </TouchableOpacity>
           </View>
         </View>
-        <View style={styles.divider}/>
-
-
-        <Text style={styles.sectionTitle}>My Orders</Text>
-        <View style={styles.orderSection}>
-        
-          <TouchableOpacity style={styles.orderItem} onPress={() => router.push("/orders/unpaid")}>
-            <FontAwesome name="credit-card" size={70} color="#C1553B" />
-
-            <Text style={styles.orderText}>Unpaid Order</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={() =>
-              router.push({
-                pathname: '/orders/completed',
-              })
-          } style={styles.orderItem}>
-            <Ionicons name="bag-check-outline" size={85} color="#C1553B"/>
-            <Text style={styles.orderText}>Completed Orders</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-
+      </SafeAreaView>
   );
 }
 const styles = StyleSheet.create({
@@ -116,9 +117,9 @@ const styles = StyleSheet.create({
   },
   divider: {
     height: 1.5,
-    backgroundColor: "#f2c088", 
-    width: "80%",               
-    alignSelf: "center",        
+    backgroundColor: "#f2c088",
+    width: "80%",
+    alignSelf: "center",
     // marginVertical: 24,
     marginBottom: 40,
   },

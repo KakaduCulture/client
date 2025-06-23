@@ -11,7 +11,6 @@ import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { useRouter } from "expo-router";
 
-
 export default function TopBar() {
   const [isSearching, setIsSearching] = useState(false);
   const [searchText, setSearchText] = useState("");
@@ -55,19 +54,18 @@ export default function TopBar() {
 
 const styles = StyleSheet.create({
   container: {
-    // position: 'absolute',
     backgroundColor: "#FFF9EB",
-    // backgroundColor: "white",
     flexDirection: "row",
-    width: "100%", // kéo dài hết chiều ngang
-    height: 100,
+    width: "100%",
+    height: 72,
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 20,
+    paddingVertical: 10,
   },
   logoText: {
     alignItems: "center",
-    marginTop: 20,
+    // marginTop: 20,
   },
   logo1: {
     // width: 150,
@@ -87,7 +85,7 @@ const styles = StyleSheet.create({
     letterSpacing: 1.5,
   },
   rightSection: {
-    marginTop: 25,
+    // marginTop: 25,
     flexDirection: "row",
     alignItems: "center",
   },
@@ -98,7 +96,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF9EB",
     borderWidth: 0.4,
     borderRadius: 5,
-    marginBottom: 15,
+    // marginBottom: 15,
     paddingHorizontal: 15,
     paddingVertical: 11,
     fontSize: 16,

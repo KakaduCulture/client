@@ -1,4 +1,3 @@
-import TopBar from '@/components/layout/TopBar';
 import React from 'react';
 import {
   View,
@@ -7,9 +6,13 @@ import {
   ScrollView,
   StyleSheet,
   FlatList,
+  StatusBar,
+  TouchableOpacity,
 } from 'react-native';
-import { useColorScheme } from '@/hooks/useColorScheme';
-import { useLocalSearchParams } from 'expo-router';
+import {useColorScheme} from '@/hooks/useColorScheme';
+import {useFocusEffect, useLocalSearchParams, useNavigation} from 'expo-router';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import Feather from '@expo/vector-icons/Feather';
 
 const imageMap = {
   "waterfall.jpg": require("@/assets/images/waterfall.jpg"),
@@ -24,16 +27,16 @@ const imageMap = {
 
 export default function DiscoverDetailScreen() {
   const colorScheme = useColorScheme();
-  const { name, image, description, headline1, headline2 } = useLocalSearchParams();
+  const {name, image, description, headline1, headline2} = useLocalSearchParams();
+  const navigation = useNavigation();
 
   const recommended = [
-    { id: '1', name: 'Product 1' },
-    { id: '2', name: 'Product 2' },
-    { id: '3', name: 'Product 3' },
-    { id: '4', name: 'Product 4' },
+    {id: '1', name: 'Product 1'},
+    {id: '2', name: 'Product 2'},
+    {id: '3', name: 'Product 3'},
+    {id: '4', name: 'Product 4'},
   ];
 
-  // Xác định ảnh phụ theo chủ đề
   let img1 = image;
   let img2 = image;
 
@@ -45,55 +48,107 @@ export default function DiscoverDetailScreen() {
     img2 = "waterfall2.jpg";
   }
 
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShown: true,
+      title: name as string,
+      headerStyle: {
+        backgroundColor: '#FFF9EB',
+      },
+      headerTitleStyle: {
+        color: '#C1553B',
+        fontFamily: 'sans-serif-condensed',
+      },
+      headerLeft: () => (
+          <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={{flexDirection: 'row', alignItems: 'center', marginLeft: -2}}
+          >
+            {/*<FontAwesome name="arrow-left" size={20} color="#C1553B"/>*/}
+            <Feather name="chevron-left" size={20} color="#C1553B" />
+            <Text
+                style={{
+                  color: '#C1553B',
+                  fontSize: 16,
+                  marginLeft: 6,
+                  fontFamily: 'sans-serif-condensed',
+                }}
+            >
+              Back
+            </Text>
+          </TouchableOpacity>
+      ),
+      headerLeftContainerStyle: {
+        paddingLeft: 0,
+        marginLeft: -8,
+      },
+    });
+  }, [navigation, name]);
+
+  useFocusEffect(
+      React.useCallback(() => {
+        navigation.getParent()?.setOptions({
+          tabBarStyle: {display: 'none'},
+        });
+
+        return () => {
+          navigation.getParent()?.setOptions({
+            tabBarStyle: {display: 'flex'},
+          });
+        };
+      }, [navigation])
+  );
+
   return (
-    <View style={[styles.container, { backgroundColor: 'white' }]}>
-      <TopBar />
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 120 }}
-      >
-        <Image source={imageMap[image]} style={styles.banner} />
+      <>
+        <StatusBar backgroundColor="#FFF9EB" barStyle="dark-content"/>
+        <View style={[styles.container, {backgroundColor: '#FFF9EB'}]}>
+          <ScrollView
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{paddingBottom: 120}}
+          >
+            <Image source={imageMap[image]} style={styles.banner}/>
 
-        <Text style={styles.articleTitle}>{name}</Text>
-        <Text style={styles.articleText}>{description}</Text>
+            <Text style={styles.articleTitle}>{name}</Text>
+            <Text style={styles.articleText}>{description}</Text>
 
-        {/* Headline 1 – Image Right */}
-        <Text style={styles.headline}>{headline1}</Text>
-        <View style={styles.row}>
-          <Text style={[styles.articleText, { flex: 1 }]}>
-            Explore scenic locations and discover unique spots that match your activity. Whether it’s the vibrant wildlife or tranquil surroundings, this section highlights the best experiences.
-          </Text>
-          <Image source={imageMap[img1]} style={styles.thumbnail} />
-        </View>
-
-        {/* Headline 2 – Image Left */}
-        <Text style={styles.headline}>{headline2}</Text>
-        <View style={styles.row}>
-          <Image source={imageMap[img2]} style={styles.thumbnail} />
-          <Text style={[styles.articleText, { flex: 1, marginLeft: 12 }]}>
-            Plan your next outing with expert tips and guides to ensure a safe and enjoyable journey. From packing essentials to weather insights, we’ve got you covered.
-          </Text>
-        </View>
-
-        {/* YOU MAY LIKE */}
-        <Text style={styles.mayLike}>YOU MAY LIKE</Text>
-        <FlatList
-          horizontal
-          data={recommended}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <View style={styles.productCard}>
-              <View style={styles.productImage} />
-              <Text style={styles.productName}>{item.name}</Text>
+            <Text style={styles.headline}>{headline1}</Text>
+            <View style={styles.row}>
+              <Text style={[styles.articleText, {flex: 1}]}>
+                Explore scenic locations and discover unique spots that match your activity. Whether it’s the vibrant
+                wildlife or tranquil surroundings, this section highlights the best experiences.
+              </Text>
+              <Image source={imageMap[img1]} style={styles.thumbnail}/>
             </View>
-          )}
-          showsHorizontalScrollIndicator={false}
-          scrollEnabled={false}
-        />
 
-        <Text style={styles.seeMore}>SEE MORE &gt;&gt;</Text>
-      </ScrollView>
-    </View>
+            <Text style={styles.headline}>{headline2}</Text>
+            <View style={styles.row}>
+              <Image source={imageMap[img2]} style={styles.thumbnail}/>
+              <Text style={[styles.articleText, {flex: 1, marginLeft: 12}]}>
+                Plan your next outing with expert tips and guides to ensure a safe and enjoyable journey. From packing
+                essentials to weather insights, we’ve got you covered.
+              </Text>
+            </View>
+
+            <Text style={styles.mayLike}>YOU MAY LIKE</Text>
+            <FlatList
+                horizontal
+                data={recommended}
+                keyExtractor={(item) => item.id}
+                renderItem={({item}) => (
+                    <View style={styles.productCard}>
+                      <View style={styles.productImage}/>
+                      <Text style={styles.productName}>{item.name}</Text>
+                    </View>
+                )}
+                showsHorizontalScrollIndicator={false}
+                scrollEnabled={false}
+            />
+
+            <Text style={styles.seeMore}>SEE MORE &gt;&gt;</Text>
+          </ScrollView>
+        </View>
+      </>
   );
 }
 

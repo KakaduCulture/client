@@ -14,7 +14,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  const router = useRouter(); // ✅ 在组件内声明
+  const router = useRouter();
 
   return (
     <Tabs

@@ -6,89 +6,63 @@ import {
   ScrollView,
   Image,
   StyleSheet,
-  FlatList,
+  FlatList, StatusBar,
 } from "react-native";
-import { useRouter, useNavigation, router } from "expo-router";
-import { IconSymbol } from "@/components/ui/IconSymbol";
-import { Colors } from "@/constants/Colors";
-import { useColorScheme } from "@/hooks/useColorScheme";
-import type { NativeStackNavigationOptions } from "@react-navigation/native-stack";
+import {useRouter, useNavigation, router} from "expo-router";
+import {IconSymbol} from "@/components/ui/IconSymbol";
+import {Colors} from "@/constants/Colors";
+import {useColorScheme} from "@/hooks/useColorScheme";
+import type {NativeStackNavigationOptions} from "@react-navigation/native-stack";
 import TopBar from "@/components/layout/TopBar";
 import StoryList from "@/app/(tabs)/discover/story";
 import ActivityList from "@/app/(tabs)/discover/activities";
-import { Video, ResizeMode } from "expo-av";
-import { Button } from "@react-navigation/elements";
+import {Video, ResizeMode} from "expo-av";
+import {Button} from "@react-navigation/elements";
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 export default function DiscoverScreen() {
-  // const router = useRouter();
-  // const colorScheme = useColorScheme();
-  // const navigation = useNavigation();
+  const navigation = useNavigation();
 
-  // React.useLayoutEffect(() => {
-  //   navigation.setOptions({
-  //     title: 'Discover',
-  //     headerRight: () => (
-  //         <Pressable onPress={() => router.push('/(tabs)/discover/search')}>
-  //           <IconSymbol
-  //               name="magnifyingglass"
-  //               size={24}
-  //               color={Colors[colorScheme ?? 'light'].text}
-  //               style={{ marginRight: 16 }}
-  //           />
-  //         </Pressable>
-  //     ),
-  //   });
-  // }, [navigation, router, colorScheme]);
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShown: false,
+    });
+  }, [navigation]);
 
   return (
-    <FlatList
-      data={null} // không có item thực sự
-      ListHeaderComponent={
-        <>
-          <View
-            style={styles.container}
-            // style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
-          >
-            <View>
-              <TopBar />
-            </View>
-            <View>
-              <StoryList />
-            </View>
-            <Image
-              source={require("@/assets/images/Slogan.png")}
-              style={styles.slogan}
-            ></Image>
-            <Video
-              source={{
-                uri: "https://kakadutourism.com/files/videos/KT-WEB-HERO-VID-Reduced.mov",
-              }}
-              shouldPlay
-              isMuted
-              resizeMode={ResizeMode.CONTAIN}
-              useNativeControls={false}
-              isLooping
-              style={{ width: "100%", height: 200, marginTop: 20 }}
-            />
-
-            <View style={styles.activitiesSection}>
-              <Text style={styles.header1}>Activities</Text>
-              <ActivityList />
-            </View>
-
-            {/* <Text style={{ color: "white", marginBottom: 40 }}>
-              Discover Page
-            </Text>
-            <Button onPress={() => router.replace("/discover/detail")}>
-              {" "}
-              Discover Detail
-            </Button> */}
-          </View>
-        </>
-      }
-      renderItem={null}
-      keyExtractor={() => "static"}
-    />
+      <SafeAreaView style={{ backgroundColor: '#FFF9EB', flex: 1 }}>
+        <StatusBar backgroundColor="#FFF9EB" barStyle="dark-content" />
+        <FlatList
+            data={null} // không có item thực sự
+            ListHeaderComponent={
+              <View style={styles.container}>
+                <TopBar />
+                <StoryList />
+                <Image
+                    source={require("@/assets/images/Slogan.png")}
+                    style={styles.slogan}
+                />
+                <Video
+                    source={{
+                      uri: "https://kakadutourism.com/files/videos/KT-WEB-HERO-VID-Reduced.mov",
+                    }}
+                    shouldPlay
+                    isMuted
+                    resizeMode={ResizeMode.CONTAIN}
+                    useNativeControls={false}
+                    isLooping
+                    style={{ width: "100%", height: 200, marginTop: 20 }}
+                />
+                <View style={styles.activitiesSection}>
+                  <Text style={styles.header1}>Activities</Text>
+                  <ActivityList />
+                </View>
+              </View>
+            }
+            renderItem={null}
+            keyExtractor={() => "static"}
+        />
+      </SafeAreaView>
   );
 }
 

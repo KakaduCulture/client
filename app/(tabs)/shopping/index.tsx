@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import TopBar from '@/components/layout/TopBar';
 import {
   View,
@@ -7,11 +7,13 @@ import {
   FlatList,
   StyleSheet,
   Image,
+  StatusBar
 } from 'react-native';
-import { useRouter, useNavigation } from 'expo-router';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+import {useRouter, useNavigation} from 'expo-router';
+import {IconSymbol} from '@/components/ui/IconSymbol';
+import {Colors} from '@/constants/Colors';
+import {useColorScheme} from '@/hooks/useColorScheme';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 interface IProductData {
   id: string;
@@ -31,59 +33,54 @@ export default function ShoppingScreen() {
 
   useEffect(() => {
     fetch('http://10.0.0.60:10000/api/product')
-      .then((res) => res.json())
-      .then((data) => {
-        setProducts(data);
-      })
-      .catch((err) => console.error('Failed to fetch products:', err));
+        .then((res) => res.json())
+        .then((data) => {
+          setProducts(data);
+        })
+        .catch((err) => console.error('Failed to fetch products:', err));
   }, []);
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
-      title: 'Shopping',
-      headerRight: () => (
-        <Pressable onPress={() => router.push('/(tabs)/shopping/cart')}>
-          <IconSymbol
-            name="bag.fill"
-            size={24}
-            color={Colors[colorScheme ?? 'light'].text}
-            style={{ marginRight: 16 }}
-          />
-        </Pressable>
-      ),
+      headerShown: false,
     });
-  }, [navigation, router, colorScheme]);
+  }, [navigation]);
 
   return (
-    <View>
-      <TopBar />
-      <FlatList
-        contentContainerStyle={styles.container}
-        data={products}
-        keyExtractor={(item) => item.id.toString()}
-        numColumns={2}
-        renderItem={({ item }) => (
-          <Pressable
-            style={({ pressed }) => [
-              styles.productCard,
-              pressed && { transform: [{ scale: 0.98 }], opacity: 0.85 },
-            ]}
-            onPress={() =>
-              router.push({
-                pathname: '/shopping/[id]/detail',
-                params: { id: String(item.id) },
-              })
-            }
-          >
-            <Image source={{ uri: item.imageUrl }} style={styles.productImage} />
-            <Text style={styles.productName} numberOfLines={2}>
-              {item.name}
-            </Text>
-            <Text style={styles.productPrice}>${item.price.toLocaleString()}</Text>
-          </Pressable>
-        )}
-      />
-    </View>
+      <>
+        <StatusBar backgroundColor="#FFF9EB" barStyle="dark-content" />
+        <SafeAreaView style={{ backgroundColor: '#FFF9EB', flex: 1 }}>
+          <View>
+            <TopBar/>
+            <FlatList
+                contentContainerStyle={styles.container}
+                data={products}
+                keyExtractor={(item) => item.id.toString()}
+                numColumns={2}
+                renderItem={({item}) => (
+                    <Pressable
+                        style={({pressed}) => [
+                          styles.productCard,
+                          pressed && {transform: [{scale: 0.98}], opacity: 0.85},
+                        ]}
+                        onPress={() =>
+                            router.push({
+                              pathname: '/shopping/[id]/detail',
+                              params: {id: String(item.id)},
+                            })
+                        }
+                    >
+                      <Image source={{uri: item.imageUrl}} style={styles.productImage}/>
+                      <Text style={styles.productName} numberOfLines={2}>
+                        {item.name}
+                      </Text>
+                      <Text style={styles.productPrice}>${item.price.toLocaleString()}</Text>
+                    </Pressable>
+                )}
+            />
+          </View>
+        </SafeAreaView>
+      </>
   );
 }
 
@@ -103,7 +100,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     shadowColor: '#000',
     shadowOpacity: 0.08,
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowRadius: 6,
     elevation: 3,
   },
