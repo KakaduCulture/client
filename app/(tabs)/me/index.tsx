@@ -7,11 +7,11 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import { useEffect, useState } from "react";
-import { useRouter } from "expo-router";
-import { deleteToken } from "@/utils/token";
+import {useEffect, useState} from "react";
+import {useRouter} from "expo-router";
+import {deleteToken} from "@/utils/token";
 import TopBar from "@/components/layout/TopBar";
-import { getCustomer, deleteCustomer } from "@/utils/session";
+import {getCustomer, deleteCustomer} from "@/utils/session";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
@@ -25,18 +25,18 @@ export default function MeScreen() {
 
   if (!customer)
     return (
-      <View style={styles.centeredContainer}>
-        <Text style={styles.buttonText}>
-          {" "}
-          Already have an account?{" "}
-          <Text
-            style={styles.linkText}
-            onPress={() => router.push("/(auth)/login")}
-          >
-            Sign in
-          </Text>{" "}
-        </Text>
-      </View>
+        <View style={styles.centeredContainer}>
+          <Text style={styles.buttonText}>
+            {" "}
+            Already have an account?{" "}
+            <Text
+                style={styles.linkText}
+                onPress={() => router.push("/(auth)/login")}
+            >
+              Sign in
+            </Text>{" "}
+          </Text>
+        </View>
     );
 
   const handleLogout = async () => {
@@ -47,38 +47,42 @@ export default function MeScreen() {
 
   return (
 
-     
+
       <View style={styles.container}>
-      <TopBar />
+        <TopBar/>
         <View style={styles.profileHeader}>
           <Image
-            source={require("@/assets/images/story3.webp")}
-            style={styles.avatar}
+              source={require("@/assets/images/story3.webp")}
+              style={styles.avatar}
           />
 
-          <View >
+          <View>
             <Text style={styles.name}>{customer.name}</Text>
             <Text style={styles.email}>{customer.username}</Text>
 
             <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
-  <Text style={styles.logoutText}>Logout</Text>
-</TouchableOpacity>
+              <Text style={styles.logoutText}>Logout</Text>
+            </TouchableOpacity>
           </View>
         </View>
-        <View style={styles.divider} />
+        <View style={styles.divider}/>
 
-       
+
         <Text style={styles.sectionTitle}>My Orders</Text>
         <View style={styles.orderSection}>
-        
+
           <TouchableOpacity style={styles.orderItem}>
-            <FontAwesome name="credit-card" size={70} color="#C1553B" />
+            <FontAwesome name="credit-card" size={70} color="#C1553B"/>
 
             <Text style={styles.orderText}>Unpaid Order</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.orderItem}>
-            <Ionicons name="bag-check-outline" size={85} color="#C1553B" />
+          <TouchableOpacity onPress={() =>
+              router.push({
+                pathname: '/orders/completed',
+              })
+          } style={styles.orderItem}>
+            <Ionicons name="bag-check-outline" size={85} color="#C1553B"/>
             <Text style={styles.orderText}>Completed Orders</Text>
           </TouchableOpacity>
         </View>
@@ -92,16 +96,16 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     // padding: 16,
   },
-  
+
   profileHeader: {
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 20,
-   paddingTop: 30,
-   paddingLeft: 30,
+    paddingTop: 30,
+    paddingLeft: 30,
 
   },
-  
+
   avatar: {
     width: 110,
     height: 110,
@@ -116,20 +120,20 @@ const styles = StyleSheet.create({
     width: "80%",               // chỉ chiếm 80% chiều rộng
     alignSelf: "center",        // căn giữa ngang
     // marginVertical: 24,
-     marginBottom: 40,
+    marginBottom: 40,
   },
-  
+
   profileInfo: {
     flex: 1,
   },
-  
+
   name: {
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 4,
     color: "#222",
   },
-  
+
   email: {
     fontSize: 14,
     color: "gray",
@@ -146,7 +150,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",        // nền trắng
     alignSelf: "flex-start",        // giữ gọn bên trái profile
   },
-  
+
   logoutText: {
     color: "#C1553B",
     fontWeight: "bold",
