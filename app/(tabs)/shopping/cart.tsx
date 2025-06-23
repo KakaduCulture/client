@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
   Pressable,
-  Alert,
+  Alert, TouchableOpacity,
 } from 'react-native';
 import axios from 'axios';
-import TopBar from '@/components/layout/TopBar';
+import {useFocusEffect, useNavigation} from "expo-router";
+import Feather from "@expo/vector-icons/Feather";
 
 type CartItem = {
   product_id: number;
@@ -22,6 +23,7 @@ type CartItem = {
 export default function CartScreen() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [totalAmount, setTotalAmount] = useState(0);
+  const navigation = useNavigation();
   const userId = 1; // Replace with actual logged-in user ID
 
   useEffect(() => {
@@ -50,8 +52,11 @@ export default function CartScreen() {
       setCartItems(mergedItems);
 
       const total = mergedItems.reduce(
-        (sum, item) => sum + item.price * item.quantity,
-        0
+          (
+              sum,
+              item
+          ) => sum + item.price * item.quantity,
+          0
       );
       setTotalAmount(total);
     } catch (err) {
@@ -60,40 +65,90 @@ export default function CartScreen() {
     }
   };
 
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShown: true,
+      title: 'Shopping Cart',
+      headerStyle: {
+        backgroundColor: '#FFF9EB',
+      },
+      headerTitleStyle: {
+        color: '#C1553B',
+        fontFamily: 'sans-serif-condensed',
+      },
+      headerLeft: () => (
+          <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={{flexDirection: 'row', alignItems: 'center', marginLeft: -2}}
+          >
+            <Feather name="chevron-left" size={20} color="#C1553B" />
+            <Text
+                style={{
+                  color: '#C1553B',
+                  fontSize: 16,
+                  marginLeft: 6,
+                  fontFamily: 'sans-serif-condensed',
+                }}
+            >
+              Back
+            </Text>
+          </TouchableOpacity>
+      ),
+      headerLeftContainerStyle: {
+        paddingLeft: 0,
+        marginLeft: -8,
+      },
+    });
+  }, [navigation]);
+
+  useFocusEffect(
+      React.useCallback(() => {
+        navigation.getParent()?.setOptions({
+          tabBarStyle: {display: 'none'},
+        });
+
+        return () => {
+          navigation.getParent()?.setOptions({
+            tabBarStyle: {display: 'flex'},
+          });
+        };
+      }, [navigation])
+  );
+
   return (
-    <View style={styles.wrapper}>
-      <TopBar />
+      <View style={styles.wrapper}>
+        {/*<TopBar />*/}
 
-      <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.heading}>Your Shopping Cart</Text>
+        <ScrollView contentContainerStyle={styles.container}>
+          <Text style={styles.heading}>Your Shopping Cart</Text>
 
-        {cartItems.length === 0 ? (
-          <Text style={styles.empty}>🛒 Your cart is currently empty</Text>
-        ) : (
-          cartItems.map((item) => (
-            <View key={item.product_id} style={styles.item}>
-              <View style={styles.row}>
-                <Text style={styles.name}>{item.name_product}</Text>
-                <Text style={styles.price}>${item.price}</Text>
+          {cartItems.length === 0 ? (
+              <Text style={styles.empty}>🛒 Your cart is currently empty</Text>
+          ) : (
+              cartItems.map((item) => (
+                  <View key={item.product_id} style={styles.item}>
+                    <View style={styles.row}>
+                      <Text style={styles.name}>{item.name_product}</Text>
+                      <Text style={styles.price}>${item.price}</Text>
+                    </View>
+                    <Text style={styles.detail}>Quantity: {item.quantity}</Text>
+                    <Text style={styles.detail}>Product ID: {item.product_id}</Text>
+                  </View>
+              ))
+          )}
+
+          {cartItems.length > 0 && (
+              <View style={styles.totalBox}>
+                <Text style={styles.totalLabel}>Total:</Text>
+                <Text style={styles.totalAmount}>${totalAmount.toFixed(2)}</Text>
+
+                <Pressable style={styles.checkoutButton} onPress={() => console.log('Pending')}>
+                  <Text style={styles.checkoutText}>Checkout</Text>
+                </Pressable>
               </View>
-              <Text style={styles.detail}>Quantity: {item.quantity}</Text>
-              <Text style={styles.detail}>Product ID: {item.product_id}</Text>
-            </View>
-          ))
-        )}
-
-        {cartItems.length > 0 && (
-          <View style={styles.totalBox}>
-            <Text style={styles.totalLabel}>Total:</Text>
-            <Text style={styles.totalAmount}>${totalAmount.toFixed(2)}</Text>
-
-            <Pressable style={styles.checkoutButton} onPress={() => console.log('Pending')}>
-              <Text style={styles.checkoutText}>Checkout</Text>
-            </Pressable>
-          </View>
-        )}
-      </ScrollView>
-    </View>
+          )}
+        </ScrollView>
+      </View>
   );
 }
 
