@@ -25,7 +25,7 @@ export default function UnpaidOrderScreen() {
   const [customerId, setCustomerId] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const titleText= "Profile";
+  const titleText= "Unpaid Order";
   
 
 const router = useRouter();
@@ -150,7 +150,7 @@ const navigation = useNavigation();
     try {
       await payOrder(customerId);
       Alert.alert("Success", "Payment successful!");
-      router.replace("/(tabs)/discover");
+      router.replace("/orders/completed");
     } catch (err: any) {
       console.error("Payment error", err);
       Alert.alert("Error", err.message || "Payment failed");
@@ -169,7 +169,7 @@ if (isLoading) {
       <>
      <StatusBar backgroundColor="#FFF9EB" barStyle="dark-content"/>
     <ScrollView style={styles.container}>
-      <Text style={styles.title}>Unpaid Order</Text>
+    
 
      
 

@@ -12,7 +12,7 @@ export default function UnpaidScreen() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
- const titleText= "Profile";
+ const titleText= "Completed Orders";
  const navigation = useNavigation();
 
   const API_BASE_URL =
@@ -103,7 +103,7 @@ export default function UnpaidScreen() {
      <>
          <StatusBar backgroundColor="#FFF9EB" barStyle="dark-content"/>
       <ScrollView style={styles.container}>
-        <Text style={styles.sectionTitle}>Completed Orders</Text>
+
 
         {order.map((orderGroup: any) => (
             <View key={orderGroup.order.id} style={styles.card}>
