@@ -52,6 +52,7 @@ export default function DiscoverDetailScreen() {
     navigation.setOptions({
       headerShown: true,
       title: name as string,
+      headerTitleAlign: "center",
       headerStyle: {
         backgroundColor: '#FFF9EB',
       },

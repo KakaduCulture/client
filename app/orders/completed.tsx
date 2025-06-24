@@ -1,7 +1,9 @@
 import React, {useEffect, useState} from "react";
-import {View, Text, ScrollView, StyleSheet, TextInput, Button, Alert} from "react-native";
+import {View, Text, ScrollView, StyleSheet, TextInput, Button, Alert, StatusBar,TouchableOpacity} from "react-native";
 import {getCustomer, saveCustomer} from "@/utils/session";
 import Constants from 'expo-constants';
+import { useNavigation} from 'expo-router';
+import Feather from '@expo/vector-icons/Feather';
 
 export default function UnpaidScreen() {
   const [order, setOrder] = useState<any[]>([]);
@@ -10,9 +12,50 @@ export default function UnpaidScreen() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
+ const titleText= "Profile";
+ const navigation = useNavigation();
+
   const API_BASE_URL =
       Constants.expoConfig?.extra?.API_BASE_URL ??
       Constants.manifest2?.extra?.API_BASE_URL;
+
+      React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShown: true,
+      headerTitleAlign: "center",
+      title: titleText as string,
+      headerStyle: {
+        backgroundColor: '#FFF9EB',
+      },
+      headerTitleStyle: {
+        color: '#C1553B',
+        fontFamily: 'sans-serif-condensed',
+      },
+      headerLeft: () => (
+          <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={{flexDirection: 'row', alignItems: 'center', marginLeft: -2}}
+          >
+            {/*<FontAwesome name="arrow-left" size={20} color="#C1553B"/>*/}
+            <Feather name="chevron-left" size={20} color="#C1553B" />
+            <Text
+                style={{
+                  color: '#C1553B',
+                  fontSize: 16,
+                  marginLeft: 6,
+                  fontFamily: 'sans-serif-condensed',
+                }}
+            >
+              Back
+            </Text>
+          </TouchableOpacity>
+      ),
+      headerLeftContainerStyle: {
+        paddingLeft: 0,
+        marginLeft: -8,
+      },
+    });
+  }, [navigation, titleText]);
 
   useEffect(() => {
     (async () => {
@@ -57,6 +100,8 @@ export default function UnpaidScreen() {
   }
 
   return (
+     <>
+         <StatusBar backgroundColor="#FFF9EB" barStyle="dark-content"/>
       <ScrollView style={styles.container}>
         <Text style={styles.sectionTitle}>Completed Orders</Text>
 
@@ -77,6 +122,7 @@ export default function UnpaidScreen() {
             </View>
         ))}
       </ScrollView>
+          </>
   );
 }
 

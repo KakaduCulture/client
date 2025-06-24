@@ -7,10 +7,13 @@ import {
   ScrollView,
   StyleSheet,
   Alert,
+  StatusBar,
 } from "react-native";
 import { getUnpaidOrders, payOrder } from "@/lib/api/order";
 import { getCustomer } from "@/utils/session";
 import { useRouter } from "expo-router";
+import { useNavigation} from 'expo-router';
+import Feather from '@expo/vector-icons/Feather';
 
 export default function UnpaidOrderScreen() {
   const [items, setItems] = useState<any[]>([]);
@@ -22,8 +25,50 @@ export default function UnpaidOrderScreen() {
   const [customerId, setCustomerId] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const titleText= "Profile";
+  
 
-  const router = useRouter();
+const router = useRouter();
+const navigation = useNavigation();
+ 
+
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShown: true,
+      title: titleText as string,
+      headerTitleAlign: "center",
+      headerStyle: {
+        backgroundColor: '#FFF9EB',
+      },
+      headerTitleStyle: {
+        color: '#C1553B',
+        fontFamily: 'sans-serif-condensed',
+      },
+      headerLeft: () => (
+          <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={{flexDirection: 'row', alignItems: 'center', marginLeft: -2}}
+          >
+            {/*<FontAwesome name="arrow-left" size={20} color="#C1553B"/>*/}
+            <Feather name="chevron-left" size={20} color="#C1553B" />
+            <Text
+                style={{
+                  color: '#C1553B',
+                  fontSize: 16,
+                  marginLeft: 6,
+                  fontFamily: 'sans-serif-condensed',
+                }}
+            >
+              Back
+            </Text>
+          </TouchableOpacity>
+      ),
+      headerLeftContainerStyle: {
+        paddingLeft: 0,
+        marginLeft: -8,
+      },
+    });
+  }, [navigation, titleText]);
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -61,8 +106,6 @@ export default function UnpaidOrderScreen() {
   }, []);
 
  
-
-  // const handlePay = async () => {
   //   if (!customerId) {
   //     Alert.alert("Missing customer ID");
   //     return;
@@ -123,6 +166,8 @@ if (isLoading) {
     return <Text style={styles.loading}>No unpaid orders</Text>;
   }
   return (
+      <>
+     <StatusBar backgroundColor="#FFF9EB" barStyle="dark-content"/>
     <ScrollView style={styles.container}>
       <Text style={styles.title}>Unpaid Order</Text>
 
@@ -177,6 +222,7 @@ if (isLoading) {
         </Text>
       </TouchableOpacity>
     </ScrollView>
+    </>
   );
 }
 
