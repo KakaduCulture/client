@@ -40,15 +40,21 @@ export default function LoginScreen() {
       const API_BASE_URL =
           Constants.expoConfig?.extra?.API_BASE_URL ??
           Constants.manifest2?.extra?.API_BASE_URL;
+          console.log("url:", API_BASE_URL );
+          console.log("Start to login")
       const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({username: email, password}),
       });
 
+      // console.log("response:", response);
+
       const data = await response.json();
 
-      console.log('data', data);
+      console.log("data:", data);
+
+      // console.log('data', data);
 
       if (!response.ok) {
         Alert.alert('Login Failed', data.message || 'Unknown error');

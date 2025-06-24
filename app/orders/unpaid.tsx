@@ -96,7 +96,7 @@ const navigation = useNavigation();
 
         setName(o.order?.name || customer.name);
         setEmail(o.order?.email || customer.username);
-        setPhone(o.order?.phone || "");
+        setPhone(o.order?.mobileNumber || "");
         setAddress(o.order?.address || "");
       }
        setIsLoading(false);
